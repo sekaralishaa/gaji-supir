@@ -145,11 +145,12 @@ button[kind="primary"][key="tambah"] {
     background-color: #F0C42D !important;
 }
 button[kind="primary"][key="selesai"] {
-    background-color: #65975E !important;
+    background-color: #75975E !important;
 }
 button[kind="primary"]:has(span:contains('Khusus Admin')) {
-    background-color: #65975E !important;
+    background-color: #75975E !important;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
