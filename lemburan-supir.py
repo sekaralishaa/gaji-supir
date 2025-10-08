@@ -58,39 +58,45 @@ with colB:
     selesai_btn = st.button("✅ Selesai", use_container_width=True)
 
 # ------------------------------
-# Styling tombol
+# CSS Styling
 # ------------------------------
 st.markdown("""
     <style>
-    /* Tambah Hari Lembur */
-    div.stButton > button:first-child:has(span:contains("Tambah Hari Lembur")) {
-        background-color: #F0C42D !important;
-        color: white !important;
+    /* Umum */
+    div.stButton > button {
         font-weight: bold !important;
-        border-radius: 10px !important;
+        border-radius: 12px !important;
         border: none !important;
         height: 3em !important;
+        color: white !important;
+        transition: all 0.2s ease-in-out;
     }
 
-    /* Selesai */
-    div.stButton > button:first-child:has(span:contains("Selesai")) {
-        background-color: #75975E !important;
-        color: white !important;
-        font-weight: bold !important;
-        border-radius: 10px !important;
-        border: none !important;
-        height: 3em !important;
+    /* Tombol Tambah Hari Lembur */
+    div[data-testid="column"]:nth-of-type(1) button {
+        background-color: #FFD93D !important; /* kuning cerah */
+    }
+
+    /* Tombol Selesai */
+    div[data-testid="column"]:nth-of-type(2) button {
+        background-color: #00C851 !important; /* hijau */
     }
 
     /* Tombol Admin */
-    div.stButton > button:first-child:has(span:contains("Khusus Admin")) {
-        background-color: #75975E !important;
+    div.stButton > button[kind="secondary"] {
+        background-color: #2B6CB0 !important; /* biru */
         color: white !important;
         font-weight: bold !important;
         border-radius: 10px !important;
         border: none !important;
         height: 2.8em !important;
         margin-top: 1em !important;
+    }
+
+    /* Hover efek */
+    div.stButton > button:hover {
+        opacity: 0.9 !important;
+        transform: scale(1.02);
     }
     </style>
 """, unsafe_allow_html=True)
