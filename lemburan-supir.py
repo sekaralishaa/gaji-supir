@@ -148,12 +148,14 @@ if st.session_state.show_admin:
             # Tambahan: rekap total lembur per supir per bulan
             df_show['Bulan'] = pd.to_datetime(df_show['Tanggal'], format="%d/%m/%Y").dt.strftime('%B %Y')
             rekap = df_show.groupby(['Nama Supir', 'Bulan'])['Total Lembur (Rp)'].sum().reset_index()
-
+            # 🔹 Format angka jadi Rp dan titik ribuan
+            rekap["Total Lembur (Rp)"] = rekap["Total Lembur (Rp)"].apply(lambda x: f"Rp{int(x):,}".replace(",", "."))
             st.subheader("💰 Rekap Total Lembur per Bulan")
             st.dataframe(rekap)
         else:
             st.warning("Belum ada data lembur yang tersimpan.")
     elif password != "":
         st.error("Password salah.")
+
 
 
