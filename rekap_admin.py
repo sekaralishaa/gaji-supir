@@ -13,6 +13,9 @@ if os.path.exists(FILE_PATH):
     df['Bulan'] = pd.to_datetime(df['Tanggal'], format="%d/%m/%Y").dt.strftime('%B %Y')
     rekap = df.groupby(['Nama Supir', 'Bulan'])['Total Lembur (Rp)'].sum().reset_index()
 
+    # 🔹 Format angka jadi Rp dan titik ribuan
+    rekap["Total Lembur (Rp)"] = rekap["Total Lembur (Rp)"].apply(lambda x: f"Rp{int(x):,}".replace(",", "."))
+
     st.dataframe(rekap)
 
     nama_filter = st.selectbox("Pilih Supir:", ["Semua"] + sorted(df["Nama Supir"].unique().tolist()))
