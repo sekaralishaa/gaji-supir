@@ -9,10 +9,7 @@ import os
 st.set_page_config(page_title="Form Lembur Supir", layout="centered")
 st.title("🧾 Form Input Lembur Supir")
 
-# File penyimpanan
 FILE_PATH = "data_lembur.csv"
-
-# Gaji dasar
 GAJI_POKOK = 5_500_000
 GAJI_PER_JAM = GAJI_POKOK / 173
 
@@ -38,7 +35,7 @@ if "lembur_data" not in st.session_state:
     st.session_state.lembur_data = []
 
 # ------------------------------
-# Tampilkan input tanggal & jam
+# Input tanggal & jam
 # ------------------------------
 for i, data in enumerate(st.session_state.lembur_data):
     col1, col2, col3 = st.columns([2, 1, 0.3])
@@ -52,43 +49,48 @@ for i, data in enumerate(st.session_state.lembur_data):
             st.rerun()
 
 # ------------------------------
-# Tombol utama di bawah
+# Tombol utama
 # ------------------------------
 colA, colB = st.columns([1, 1])
 with colA:
-    tambah_btn = st.button("➕ Tambah Hari Lembur", use_container_width=True, key="tambah", type="primary")
+    tambah_btn = st.button("➕ Tambah Hari Lembur", use_container_width=True)
 with colB:
-    selesai_btn = st.button("✅ Selesai", use_container_width=True, key="selesai", type="primary")
+    selesai_btn = st.button("✅ Selesai", use_container_width=True)
 
 # ------------------------------
-# Styling tombol (warna sesuai permintaan)
+# Styling tombol
 # ------------------------------
 st.markdown("""
     <style>
-    div.stButton > button:first-child {
-        font-weight: bold;
-        color: white;
-        border-radius: 10px;
-        border: none;
-        height: 3em;
-    }
-
-    /* Tambah Hari Lembur - kuning */
-    div.stButton > button[kind="primary"][key="tambah"] {
+    /* Tambah Hari Lembur */
+    div.stButton > button:first-child:has(span:contains("Tambah Hari Lembur")) {
         background-color: #F0C42D !important;
+        color: white !important;
+        font-weight: bold !important;
+        border-radius: 10px !important;
+        border: none !important;
+        height: 3em !important;
     }
 
-    /* Selesai - hijau */
-    div.stButton > button[kind="primary"][key="selesai"] {
-        background-color: #75975E !important;
-    }
-
-    /* Tombol admin - hijau */
-    div.stButton > button:has(span:contains('Khusus Admin')) {
+    /* Selesai */
+    div.stButton > button:first-child:has(span:contains("Selesai")) {
         background-color: #75975E !important;
         color: white !important;
         font-weight: bold !important;
         border-radius: 10px !important;
+        border: none !important;
+        height: 3em !important;
+    }
+
+    /* Tombol Admin */
+    div.stButton > button:first-child:has(span:contains("Khusus Admin")) {
+        background-color: #75975E !important;
+        color: white !important;
+        font-weight: bold !important;
+        border-radius: 10px !important;
+        border: none !important;
+        height: 2.8em !important;
+        margin-top: 1em !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -115,7 +117,7 @@ if selesai_btn:
             jenis = "weekend" if hari in ["Saturday", "Sunday"] else "weekday"
             total = hitung_lembur(jenis, jam)
             hasil.append([
-                "-",  # kolom nama supir dihapus
+                "-",  # nama supir dihapus
                 tgl.strftime("%d/%m/%Y"),
                 hari,
                 jenis,
@@ -144,11 +146,9 @@ st.markdown("---")
 if "show_admin" not in st.session_state:
     st.session_state.show_admin = False
 
-# Tombol kecil untuk admin
 if st.button("🔒 Khusus Admin"):
     st.session_state.show_admin = not st.session_state.show_admin
 
-# Kalau ditekan baru muncul form password
 if st.session_state.show_admin:
     st.subheader("📊 Lihat Data (Admin Only)")
     password = st.text_input("Masukkan password admin:", type="password")
@@ -158,7 +158,6 @@ if st.session_state.show_admin:
             df_show = pd.read_csv(FILE_PATH)
             st.dataframe(df_show)
 
-            # Rekap total lembur per bulan
             df_show['Bulan'] = pd.to_datetime(df_show['Tanggal'], format="%d/%m/%Y").dt.strftime('%B %Y')
             rekap = df_show.groupby(['Nama Supir', 'Bulan'])['Total Lembur (Rp)'].sum().reset_index()
             rekap["Total Lembur (Rp)"] = rekap["Total Lembur (Rp)"].apply(lambda x: f"Rp{int(x):,}".replace(",", "."))
@@ -168,4 +167,3 @@ if st.session_state.show_admin:
             st.warning("Belum ada data lembur yang tersimpan.")
     elif password != "":
         st.error("Password salah.")
-
