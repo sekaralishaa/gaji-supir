@@ -58,7 +58,7 @@ with colB:
     selesai_btn = st.button("✅ Selesai", use_container_width=True, key="selesai_btn")
 
 # ------------------------------
-# CSS Styling (Perbaikan)
+# CSS Styling (Final Fix)
 # ------------------------------
 st.markdown("""
     <style>
@@ -68,24 +68,23 @@ st.markdown("""
         border-radius: 12px !important;
         border: none !important;
         height: 3em !important;
-        color: white !important;
         transition: all 0.2s ease-in-out;
     }
 
-    /* Tombol Tambah Hari Lembur (Kuning Soft) */
-    div.stButton:nth-of-type(1) > button {
-        background-color: #FFD966 !important; /* kuning lembut */
-        color: black !important;
+    /* Tombol Tambah Hari Lembur (kolom kiri) */
+    div[data-testid="stHorizontalBlock"] div:nth-child(1) button {
+        background-color: #FFEB80 !important; /* kuning lembut */
+        color: #000000 !important;
     }
 
-    /* Tombol Selesai (Hijau Soft) */
-    div.stButton:nth-of-type(2) > button {
-        background-color: #90EE90 !important; /* hijau muda */
-        color: black !important;
+    /* Tombol Selesai (kolom kanan) */
+    div[data-testid="stHorizontalBlock"] div:nth-child(2) button {
+        background-color: #A5D6A7 !important; /* hijau lembut */
+        color: #000000 !important;
     }
 
-    /* Tombol Admin (Biru) */
-    div.stButton:nth-of-type(3) > button {
+    /* Tombol Khusus Admin (di bawah sendiri) */
+    div[data-testid="stButton"] button[kind="secondary"] {
         background-color: #4C8BF5 !important; /* biru */
         color: white !important;
     }
@@ -170,3 +169,4 @@ if st.session_state.show_admin:
             st.warning("Belum ada data lembur yang tersimpan.")
     elif password != "":
         st.error("Password salah.")
+
