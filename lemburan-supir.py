@@ -53,9 +53,9 @@ for i, data in enumerate(st.session_state.lembur_data):
 # ------------------------------
 colA, colB = st.columns([1, 1])
 with colA:
-    tambah_btn = st.button("➕ Tambah Hari Lembur", use_container_width=True)
+    tambah_btn = st.button("➕ Tambah Hari Lembur", use_container_width=True, key="tambah_btn")
 with colB:
-    selesai_btn = st.button("✅ Selesai", use_container_width=True)
+    selesai_btn = st.button("✅ Selesai", use_container_width=True, key="selesai_btn")
 
 # ------------------------------
 # CSS Styling
@@ -73,18 +73,18 @@ st.markdown("""
     }
 
     /* Tombol Tambah Hari Lembur */
-    div[data-testid="column"]:nth-of-type(1) button {
-        background-color: #FFD93D !important; /* kuning cerah */
+    div[data-testid="stButton"][key="tambah_btn"] button {
+        background-color: #4C8BF5 !important; /* biru cerah */
     }
 
     /* Tombol Selesai */
-    div[data-testid="column"]:nth-of-type(2) button {
-        background-color: #00C851 !important; /* hijau */
+    div[data-testid="stButton"][key="selesai_btn"] button {
+        background-color: #2E8B57 !important; /* hijau */
     }
 
     /* Tombol Admin */
-    div.stButton > button[kind="secondary"] {
-        background-color: #2B6CB0 !important; /* biru */
+    div[data-testid="stButton"][key="admin_btn"] button {
+        background-color: #336699 !important; /* biru navy */
         color: white !important;
         font-weight: bold !important;
         border-radius: 10px !important;
@@ -152,7 +152,7 @@ st.markdown("---")
 if "show_admin" not in st.session_state:
     st.session_state.show_admin = False
 
-if st.button("🔒 Khusus Admin"):
+if st.button("🔒 Khusus Admin", key="admin_btn"):
     st.session_state.show_admin = not st.session_state.show_admin
 
 if st.session_state.show_admin:
