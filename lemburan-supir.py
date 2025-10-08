@@ -65,7 +65,7 @@ for i, data in enumerate(st.session_state.lembur_data):
         )
 
 # Handle hapus via JS event
-delete_index = st.query_params.().get("delete_index", [None])[0]
+delete_index = st.query_params().get("delete_index", [None])[0]
 if delete_index is not None and delete_index.isdigit():
     idx = int(delete_index)
     if 0 <= idx < len(st.session_state.lembur_data):
@@ -152,5 +152,6 @@ button[kind="primary"]:has(span:contains('Khusus Admin')) {
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
