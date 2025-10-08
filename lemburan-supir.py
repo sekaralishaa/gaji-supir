@@ -80,12 +80,12 @@ st.markdown("""
 
     /* Selesai - hijau */
     div.stButton > button[kind="primary"][key="selesai"] {
-        background-color: #65975E !important;
+        background-color: #75975E !important;
     }
 
     /* Tombol admin - hijau */
     div.stButton > button:has(span:contains('Khusus Admin')) {
-        background-color: #65975E !important;
+        background-color: #75975E !important;
         color: white !important;
         font-weight: bold !important;
         border-radius: 10px !important;
@@ -168,3 +168,4 @@ if st.session_state.show_admin:
             st.warning("Belum ada data lembur yang tersimpan.")
     elif password != "":
         st.error("Password salah.")
+
