@@ -18,7 +18,7 @@ GAJI_POKOK = 5_500_000
 GAJI_PER_JAM = GAJI_POKOK / 173
 
 # ------------------------------
-# Fungsi perhitungan lembur
+# Fungsi hitung lembur
 # ------------------------------
 def hitung_lembur(jenis_hari, jam_lembur):
     if jenis_hari == "weekday":
@@ -26,7 +26,7 @@ def hitung_lembur(jenis_hari, jam_lembur):
             return jam_lembur * 1.5 * GAJI_PER_JAM
         else:
             return (6 * 1.5 * GAJI_PER_JAM) + ((jam_lembur - 6) * 2 * GAJI_PER_JAM)
-    else:  # weekend
+    else:
         if jam_lembur <= 6:
             return jam_lembur * 2 * GAJI_PER_JAM
         else:
@@ -42,10 +42,6 @@ if "lembur_data" not in st.session_state:
 
 st.subheader("Input Hari Lembur")
 
-# Tombol tambah hari lembur
-if st.button("➕ Tambah Hari Lembur"):
-    st.session_state.lembur_data.append({"tanggal": datetime.today(), "jam": 0.0})
-
 # Tampilkan input tanggal & jam
 for i, data in enumerate(st.session_state.lembur_data):
     col1, col2, col3 = st.columns([2, 1, 0.5])
@@ -59,9 +55,41 @@ for i, data in enumerate(st.session_state.lembur_data):
             st.rerun()
 
 # ------------------------------
-# Saat tombol selesai ditekan
+# Tombol di bagian bawah
 # ------------------------------
-if st.button("✅ Selesai"):
+colA, colB = st.columns([1, 1])
+
+with colA:
+    tambah_btn = st.button("➕ Tambah Hari Lembur", use_container_width=True, type="primary")
+with colB:
+    selesai_btn = st.button("✅ Selesai", use_container_width=True, type="primary")
+
+# Styling tombol (warna hijau, tulisan putih tebal)
+st.markdown("""
+    <style>
+    div.stButton > button:first-child {
+        background-color: #28a745;
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        border: none;
+    }
+    div.stButton > button:hover {
+        background-color: #218838;
+        color: white;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Tambah data baru kalau ditekan
+if tambah_btn:
+    st.session_state.lembur_data.append({"tanggal": datetime.today(), "jam": 0.0})
+    st.rerun()
+
+# ------------------------------
+# Simpan data saat "Selesai"
+# ------------------------------
+if selesai_btn:
     if not nama_supir:
         st.warning("Masukkan nama supir terlebih dahulu.")
     elif not st.session_state.lembur_data:
@@ -88,7 +116,6 @@ if st.button("✅ Selesai"):
             "Nama Supir", "Tanggal", "Hari", "Jenis Hari", "Jam Lembur", "Total Lembur (Rp)", "Waktu Input"
         ])
 
-        # Simpan ke CSV (append mode)
         if os.path.exists(FILE_PATH):
             df_baru.to_csv(FILE_PATH, mode="a", index=False, header=False)
         else:
@@ -98,27 +125,27 @@ if st.button("✅ Selesai"):
         st.session_state.lembur_data = []
 
 # ------------------------------
-# Admin Section - Cek Data CSV
+# Area Admin tersembunyi
 # ------------------------------
 st.markdown("---")
-st.subheader("📊 Lihat Data (Admin Only)")
 
-password = st.text_input("Masukkan password admin:", type="password")
+if "show_admin" not in st.session_state:
+    st.session_state.show_admin = False
 
-if password == "admin123":  # ubah sesuai keinginanmu
-    if os.path.exists(FILE_PATH):
-        df_show = pd.read_csv(FILE_PATH)
-        st.dataframe(df_show)
+# Tombol kecil untuk admin
+if st.button("🔒 Khusus Admin"):
+    st.session_state.show_admin = not st.session_state.show_admin
 
-        # Tombol download CSV
-        csv = df_show.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="📥 Download CSV",
-            data=csv,
-            file_name='data_lembur.csv',
-            mime='text/csv'
-        )
-    else:
-        st.warning("Belum ada data lembur yang tersimpan.")
-elif password != "":
-    st.error("Password salah.")
+# Kalau ditekan baru muncul form password
+if st.session_state.show_admin:
+    st.subheader("📊 Lihat Data (Admin Only)")
+    password = st.text_input("Masukkan password admin:", type="password")
+
+    if password == "admin123":
+        if os.path.exists(FILE_PATH):
+            df_show = pd.read_csv(FILE_PATH)
+            st.dataframe(df_show)
+        else:
+            st.warning("Belum ada data lembur yang tersimpan.")
+    elif password != "":
+        st.error("Password salah.")
