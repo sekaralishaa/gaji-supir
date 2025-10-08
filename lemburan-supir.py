@@ -96,3 +96,29 @@ if st.button("✅ Selesai"):
 
         st.success("✅ Data berhasil dimasukkan!")
         st.session_state.lembur_data = []
+
+# ------------------------------
+# Admin Section - Cek Data CSV
+# ------------------------------
+st.markdown("---")
+st.subheader("📊 Lihat Data (Admin Only)")
+
+password = st.text_input("Masukkan password admin:", type="password")
+
+if password == "admin123":  # ubah sesuai keinginanmu
+    if os.path.exists(FILE_PATH):
+        df_show = pd.read_csv(FILE_PATH)
+        st.dataframe(df_show)
+
+        # Tombol download CSV
+        csv = df_show.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="📥 Download CSV",
+            data=csv,
+            file_name='data_lembur.csv',
+            mime='text/csv'
+        )
+    else:
+        st.warning("Belum ada data lembur yang tersimpan.")
+elif password != "":
+    st.error("Password salah.")
