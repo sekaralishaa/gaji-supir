@@ -58,7 +58,7 @@ with colB:
     selesai_btn = st.button("✅ Selesai", use_container_width=True, key="selesai_btn")
 
 # ------------------------------
-# CSS Styling
+# CSS Styling (Perbaikan)
 # ------------------------------
 st.markdown("""
     <style>
@@ -72,25 +72,22 @@ st.markdown("""
         transition: all 0.2s ease-in-out;
     }
 
-    /* Tombol Tambah Hari Lembur */
-    div[data-testid="stButton"][key="tambah_btn"] button {
-        background-color: #4C8BF5 !important; /* biru cerah */
+    /* Tombol Tambah Hari Lembur (Kuning Soft) */
+    div.stButton:nth-of-type(1) > button {
+        background-color: #FFD966 !important; /* kuning lembut */
+        color: black !important;
     }
 
-    /* Tombol Selesai */
-    div[data-testid="stButton"][key="selesai_btn"] button {
-        background-color: #2E8B57 !important; /* hijau */
+    /* Tombol Selesai (Hijau Soft) */
+    div.stButton:nth-of-type(2) > button {
+        background-color: #90EE90 !important; /* hijau muda */
+        color: black !important;
     }
 
-    /* Tombol Admin */
-    div[data-testid="stButton"][key="admin_btn"] button {
-        background-color: #336699 !important; /* biru navy */
+    /* Tombol Admin (Biru) */
+    div.stButton:nth-of-type(3) > button {
+        background-color: #4C8BF5 !important; /* biru */
         color: white !important;
-        font-weight: bold !important;
-        border-radius: 10px !important;
-        border: none !important;
-        height: 2.8em !important;
-        margin-top: 1em !important;
     }
 
     /* Hover efek */
