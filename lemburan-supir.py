@@ -160,13 +160,23 @@ if st.session_state.show_admin:
             df_show = pd.read_csv(FILE_PATH)
             st.dataframe(df_show)
 
+            # -------------------------
+            # Tombol Hapus Semua Data
+            # -------------------------
+            st.warning("⚠ Menghapus data tidak bisa dibatalkan.")
+            if st.button("🗑 Hapus Semua Data", key="hapus_semua"):
+                os.remove(FILE_PATH)
+                st.success("Data berhasil dihapus seluruhnya!")
+                st.rerun()
+
+            # Rekap bulanan
             df_show['Bulan'] = pd.to_datetime(df_show['Tanggal'], format="%d/%m/%Y").dt.strftime('%B %Y')
             rekap = df_show.groupby(['Nama Supir', 'Bulan'])['Total Lembur (Rp)'].sum().reset_index()
             rekap["Total Lembur (Rp)"] = rekap["Total Lembur (Rp)"].apply(lambda x: f"Rp{int(x):,}".replace(",", "."))
             st.subheader("💰 Rekap Total Lembur per Bulan")
             st.dataframe(rekap)
+
         else:
             st.warning("Belum ada data lembur yang tersimpan.")
     elif password != "":
         st.error("Password salah.")
-
