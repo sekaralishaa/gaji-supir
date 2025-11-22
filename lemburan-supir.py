@@ -158,25 +158,52 @@ if st.session_state.show_admin:
     if password == "admin123":
         if os.path.exists(FILE_PATH):
             df_show = pd.read_csv(FILE_PATH)
-            st.dataframe(df_show)
+
+            st.write("### Semua Data Lembur")
+
+            # -------------------------
+            # Tampilkan data + tombol hapus per baris
+            # -------------------------
+            for i in range(len(df_show)):
+                cols = st.columns([6, 1])
+                
+                with cols[0]:
+                    st.write(
+                        f"**{df_show.iloc[i]['Nama Supir']}** — "
+                        f"{df_show.iloc[i]['Tanggal']} — "
+                        f"Rp{int(df_show.iloc[i]['Total Lembur (Rp)']):,}".replace(",", ".")
+                    )
+
+                with cols[1]:
+                    if st.button("❌", key=f"del_row_{i}"):
+                        df_show = df_show.drop(index=i).reset_index(drop=True)
+                        df_show.to_csv(FILE_PATH, index=False)
+                        st.success("Baris berhasil dihapus.")
+                        st.rerun()
+
+            st.markdown("---")
 
             # -------------------------
             # Tombol Hapus Semua Data
             # -------------------------
-            st.warning("⚠ Menghapus data tidak bisa dibatalkan.")
+            st.warning("⚠ Menghapus semua data tidak bisa dibatalkan.")
             if st.button("🗑 Hapus Semua Data", key="hapus_semua"):
                 os.remove(FILE_PATH)
                 st.success("Data berhasil dihapus seluruhnya!")
                 st.rerun()
 
-            # Rekap bulanan
+            # -------------------------
+            # Rekap Bulanan
+            # -------------------------
             df_show['Bulan'] = pd.to_datetime(df_show['Tanggal'], format="%d/%m/%Y").dt.strftime('%B %Y')
             rekap = df_show.groupby(['Nama Supir', 'Bulan'])['Total Lembur (Rp)'].sum().reset_index()
             rekap["Total Lembur (Rp)"] = rekap["Total Lembur (Rp)"].apply(lambda x: f"Rp{int(x):,}".replace(",", "."))
+
             st.subheader("💰 Rekap Total Lembur per Bulan")
             st.dataframe(rekap)
 
         else:
             st.warning("Belum ada data lembur yang tersimpan.")
+
     elif password != "":
         st.error("Password salah.")
