@@ -43,16 +43,24 @@ if "lembur_data" not in st.session_state:
 # Input tanggal + jam masuk + jam keluar
 # ------------------------------
 for i, data in enumerate(st.session_state.lembur_data):
-    col1, col2, col3, col4 = st.columns([2, 1, 1, 0.3])
+    col1, col2, col3, col4 = st.columns([2, 1.2, 1.2, 0.3])
 
     with col1:
         tanggal = st.date_input(f"Tanggal {i+1}", value=data["tanggal"], key=f"tgl_{i}")
 
     with col2:
-        jam_masuk = st.time_input(f"Jam Masuk {i+1}", value=data["jam_masuk"], key=f"in_{i}")
+        jam_masuk_str = st.text_input(
+            f"Jam Masuk {i+1} (format 06:00)", 
+            value=data["jam_masuk"].strftime("%H:%M"), 
+            key=f"in_{i}"
+        )
 
     with col3:
-        jam_keluar = st.time_input(f"Jam Keluar {i+1}", value=data["jam_keluar"], key=f"out_{i}")
+        jam_keluar_str = st.text_input(
+            f"Jam Keluar {i+1} (format 23:00)", 
+            value=data["jam_keluar"].strftime("%H:%M"), 
+            key=f"out_{i}"
+        )
 
     with col4:
         if st.button("❌", key=f"hapus_{i}"):
@@ -93,8 +101,10 @@ if selesai_btn:
 
         for i, data in enumerate(st.session_state.lembur_data):
             tgl = st.session_state[f"tgl_{i}"]
-            jam_in = st.session_state[f"in_{i}"]
-            jam_out = st.session_state[f"out_{i}"]
+
+            # Ambil jam yang diketik user
+            jam_in = datetime.strptime(st.session_state[f"in_{i}"], "%H:%M").time()
+            jam_out = datetime.strptime(st.session_state[f"out_{i}"], "%H:%M").time()
 
             # Hitung selisih jam
             dt_in = datetime.combine(tgl, jam_in)
@@ -111,7 +121,7 @@ if selesai_btn:
             total_rp = hitung_lembur(jenis, jam_lembur)
 
             hasil.append([
-                "-",  # Nama supir dihapus
+                "-",  # Nama supir (kosong)
                 tgl.strftime("%d/%m/%Y"),
                 hari,
                 jenis,
@@ -136,9 +146,8 @@ if selesai_btn:
         st.session_state.lembur_data = []
 
 
-
 # ------------------------------
-# Area Admin tersembunyi
+# Area Admin
 # ------------------------------
 st.markdown("---")
 
@@ -158,9 +167,7 @@ if st.session_state.show_admin:
 
             st.write("### Semua Data Lembur")
 
-            # -------------------------
-            # Tampilkan data + tombol hapus per baris
-            # -------------------------
+            # Tampilkan per baris + tombol hapus
             for i in range(len(df_show)):
                 cols = st.columns([6, 1])
                 
@@ -180,18 +187,14 @@ if st.session_state.show_admin:
 
             st.markdown("---")
 
-            # -------------------------
-            # Tombol Hapus Semua Data
-            # -------------------------
+            # Hapus Semua Data
             st.warning("⚠ Menghapus semua data tidak bisa dibatalkan.")
             if st.button("🗑 Hapus Semua Data", key="hapus_semua"):
                 os.remove(FILE_PATH)
                 st.success("Data berhasil dihapus seluruhnya!")
                 st.rerun()
 
-            # -------------------------
             # Rekap Bulanan
-            # -------------------------
             df_show['Bulan'] = pd.to_datetime(df_show['Tanggal'], format="%d/%m/%Y").dt.strftime('%B %Y')
             rekap = df_show.groupby(['Nama Supir', 'Bulan'])['Total Lembur (Rp)'].sum().reset_index()
             rekap["Total Lembur (Rp)"] = rekap["Total Lembur (Rp)"].apply(lambda x: f"Rp{int(x):,}".replace(",", "."))
