@@ -120,19 +120,29 @@ if selesai_btn:
             total_rp = hitung_lembur(jenis, jam_lembur)
 
             hasil.append([
-                "-",
-                tgl.strftime("%d/%m/%Y"),
-                hari,
-                jenis,
-                round(total_jam, 2),
-                round(jam_lembur, 2),
-                round(total_rp, 0),
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                "-",                                      # Nama Supir
+                tgl.strftime("%d/%m/%Y"),                 # Tanggal
+                hari,                                    # Hari
+                jenis,                                   # Jenis Hari
+                jam_in.strftime("%H:%M"),                # Jam Masuk
+                jam_out.strftime("%H:%M"),               # Jam Keluar
+                round(total_jam, 2),                     # Total Jam Kerja
+                round(jam_lembur, 2),                    # Jam Lembur
+                round(total_rp, 0),                      # Total Lembur (Rp)
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Waktu Input
             ])
 
         df_new = pd.DataFrame(hasil, columns=[
-            "Nama Supir", "Tanggal", "Hari", "Jenis Hari",
-            "Total Jam Kerja", "Jam Lembur", "Total Lembur (Rp)", "Waktu Input"
+            "Nama Supir",
+            "Tanggal",
+            "Hari",
+            "Jenis Hari",
+            "Jam Masuk",
+            "Jam Keluar",
+            "Total Jam Kerja",
+            "Jam Lembur",
+            "Total Lembur (Rp)",
+            "Waktu Input"
         ])
 
         if os.path.exists(FILE_PATH):
@@ -171,10 +181,13 @@ if st.session_state.show_admin:
                 cols = st.columns([6, 1])
 
                 with cols[0]:
+                    row = df_show.iloc[i]
                     st.write(
-                        f"**{df_show.iloc[i]['Nama Supir']}** — "
-                        f"{df_show.iloc[i]['Tanggal']} — "
-                        f"Rp{int(df_show.iloc[i]['Total Lembur (Rp)']):,}".replace(",", ".")
+                        f"**{row['Nama Supir']}** — {row['Tanggal']} "
+                        f"({row['Hari']}, {row['Jenis Hari']})\n"
+                        f"🕒 {row['Jam Masuk']} - {row['Jam Keluar']} | "
+                        f"Lembur: {row['Jam Lembur']} jam | "
+                        f"Total: Rp{int(row['Total Lembur (Rp)']):,}".replace(",", ".")
                     )
 
                 with cols[1]:
@@ -201,7 +214,7 @@ if st.session_state.show_admin:
             )
 
             st.subheader("💰 Rekap Total Lembur per Bulan")
-            st.dataframe(rekap)
+            st.dataframe(rekap, use_container_width=True)
 
         else:
             st.warning("Belum ada data lembur yang tersimpan.")
