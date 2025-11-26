@@ -12,7 +12,7 @@ st.title("🧾 Form Input Lembur Supir (Jam Masuk - Jam Keluar)")
 FILE_PATH = "data_lembur.csv"
 GAJI_POKOK = 5_500_000
 GAJI_PER_JAM = GAJI_POKOK / 173
-JAM_KERJA_NORMAL = 9.5  # jam kerja wajib
+JAM_KERJA_NORMAL = 9.5  # jam kerja wajib (weekday)
 
 # ------------------------------
 # Fungsi hitung lembur
@@ -112,10 +112,18 @@ if selesai_btn:
             dt_out = datetime.combine(tgl, jam_out)
 
             total_jam = (dt_out - dt_in).total_seconds() / 3600
-            jam_lembur = max(total_jam - JAM_KERJA_NORMAL, 0)
 
+            # Tentukan hari & jenis hari (weekday / weekend)
             hari = tgl.strftime("%A")
             jenis = "weekend" if hari in ["Saturday", "Sunday"] else "weekday"
+
+            # LOGIKA BARU:
+            # - weekday  : lembur = total_jam - 9.5 (min 0)
+            # - weekend  : semua jam dihitung lembur
+            if jenis == "weekend":
+                jam_lembur = total_jam
+            else:
+                jam_lembur = max(total_jam - JAM_KERJA_NORMAL, 0)
 
             total_rp = hitung_lembur(jenis, jam_lembur)
 
@@ -184,7 +192,7 @@ if st.session_state.show_admin:
                     row = df_show.iloc[i]
                     st.write(
                         f"**{row['Nama Supir']}** — {row['Tanggal']} "
-                        f"({row['Hari']}, {row['Jenis Hari']})\n"
+                        f"({row['Hari']}, {row['Jenis Hari']}) "
                         f"🕒 {row['Jam Masuk']} - {row['Jam Keluar']} | "
                         f"Lembur: {row['Jam Lembur']} jam | "
                         f"Total: Rp{int(row['Total Lembur (Rp)']):,}".replace(",", ".")
